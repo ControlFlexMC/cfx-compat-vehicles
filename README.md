@@ -5,6 +5,8 @@ drive vehicles from mods that **poll raw GLFW key state** instead of reading Min
 
 Currently supports **Immersive Vehicles (MTS)**.
 
+[中文文档](README_ZH.md)
+
 ## Why a separate mod
 
 Immersive Vehicles reads its controls through `GLFW.glfwGetKey(window, keyCode)` — it never looks at
