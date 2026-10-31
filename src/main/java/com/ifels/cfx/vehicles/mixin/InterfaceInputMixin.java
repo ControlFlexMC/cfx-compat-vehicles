@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -37,7 +38,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(targets = "mcinterface1201.InterfaceInput", remap = false)
 public class InterfaceInputMixin {
 
-    @Inject(method = "isKeyPressed", at = @At("RETURN"), cancellable = true, remap = false)
+    @Unique
+    private static final org.apache.logging.log4j.Logger CFX$LOGGER =
+            org.apache.logging.log4j.LogManager.getLogger("cfx-compat-vehicles");
+
+    @Unique
+    private static boolean cfx$reported;
+
+    @Inject(method = "isKeyPressed", at = @At("RETURN"), cancellable = true, remap = false, require = 0)
     private void cfx$vehicleKeys(int keyCode, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ() || !ControlFlexApi.isAvailable()) {
             return;
@@ -57,6 +65,13 @@ public class InterfaceInputMixin {
             held = cfx$actionHeld(control.actionId());
         }
         if (held) {
+            if (!cfx$reported) {
+                // 只报一次：说明注入生效且 IV 真的用这个键码问过。
+                // 若这行出现但车仍不动，问题在 IV 侧（例如 kbOverride），不在本桥。
+                cfx$reported = true;
+                CFX$LOGGER.info("[cfx-compat-vehicles] delivering {} as pressed (keyCode={})",
+                        control, keyCode);
+            }
             cir.setReturnValue(true);
         }
     }
