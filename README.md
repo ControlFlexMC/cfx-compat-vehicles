@@ -27,8 +27,8 @@ failure here is contained to this mod instead of silently affecting every player
   keeps working with analog movement turned off — where the stick drives those digital actions instead.
 * Nothing is polled on a timer and no global key state is written: the answer is computed only when the
   vehicle actually asks, and a physically pressed key always wins.
-* The bundled compat JSON (`assets/cfx_compat_vehicles/compat/mts.json`) is installed into
-  `config/controlflex/compat/mods/` on startup, gated by SHA-1 so player edits are never overwritten.
+* No compat JSON is shipped: the bridge reads ControlFlex's own signals, so there is no rule set to keep in
+  sync with the core mod's config format.
 
 ## Requirements
 
