@@ -1,0 +1,95 @@
+plugins {
+    id 'net.neoforged.moddev.legacyforge'
+}
+
+base {
+    archivesName = 'cfx-compat-vehicles'
+}
+
+def isRelease = project.hasProperty('release')
+def modArtifactVersion = (isRelease || !build_id) ? mod_version : "${mod_version}.${build_id}"
+version = "${modArtifactVersion}-mc${minecraft_version}-forge"
+group = maven_group
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
+}
+
+mixin {
+    config 'cfx-compat-vehicles.mixins.json'
+    // 不接 Mixin 注解处理器：本模组唯一的注入目标是第三方模组类（字符串 targets，编译期不可见），
+    // 处理器会以 "target could not be found" 拒绝编译；而该注入 remap = false，本来也不需要 refmap。
+    // 代价：以后若要注入 MC 类，必须把处理器加回来，否则生产环境缺少映射。
+}
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
+    runs {
+        client {
+            client()
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compileOnly 'com.github.ControlFlexMC:control-flex-api:0.8.8'
+    compileOnly 'org.jetbrains:annotations:24.0.1'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
+}
+
+processResources {
+    def expandProps = [
+        'mod_id'                 : mod_id,
+        'mod_name'               : mod_name,
+        'mod_version'            : mod_version,
+        'mod_authors'            : mod_authors,
+        'mod_license'            : mod_license,
+        'mod_description'        : mod_description,
+        'minecraft_version'      : minecraft_version,
+        'minecraft_version_range': minecraft_version_range,
+        'forge_version'          : forge_version,
+        'forge_version_range'    : forge_version_range,
+        'loader_version_range'   : loader_version_range,
+        'java_version'           : java_version,
+        'controlflex_mod_id'     : controlflex_mod_id,
+    ]
+
+    filesMatching(['pack.mcmeta', 'META-INF/mods.toml', '*.mixins.json']) {
+        expand expandProps
+    }
+
+    inputs.properties(expandProps)
+}
+
+jar {
+    manifest {
+        attributes([
+            'MixinConfigs': 'cfx-compat-vehicles.mixins.json'
+        ])
+    }
+
+    from(file('LICENSE')) { rename { "${it}_${mod_id}" } }
+    finalizedBy 'reobfJar'
+}
