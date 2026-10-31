@@ -18,14 +18,15 @@ failure here is contained to this mod instead of silently affecting every player
 
 ## How it works
 
-* Every client tick, the left stick is translated into "which movement keys are currently held", using
-  the player's own `W/A/S/D` bindings (`mc.options.keyUp` …), so rebinding the movement keys keeps working.
-* `InterfaceInputMixin` hooks `mcinterface1201.InterfaceInput#isKeyPressed` and answers `true` for those
-  keys when the vehicle mod's own check said no.
-* Only applies while the player rides a supported vehicle (`mcinterface*.BuilderEntityLinkedSeat`) — see
-  `VehicleTargets`.
-* The stick values come from the ControlFlex API (`ControlFlexApi.getInputProvider()`), not from a private
-  channel.
+* `InterfaceInputMixin` hooks `mcinterface1201.InterfaceInput#isKeyPressed` and answers `true` for the
+  four movement keys when ControlFlex says the player is steering.
+* The signal is the player's own tick-level `input.forwardImpulse` / `leftImpulse` — the same value
+  vanilla movement uses, after ControlFlex's analog policy and response curve. "The player is moving" and
+  "the vehicle sees a key" can therefore never disagree.
+* When the impulses are zero, the bridge falls back to ControlFlex's action state (`move_forward` …), so it
+  keeps working with analog movement turned off — where the stick drives those digital actions instead.
+* Nothing is polled on a timer and no global key state is written: the answer is computed only when the
+  vehicle actually asks, and a physically pressed key always wins.
 * The bundled compat JSON (`assets/cfx_compat_vehicles/compat/mts.json`) is installed into
   `config/controlflex/compat/mods/` on startup, gated by SHA-1 so player edits are never overwritten.
 
@@ -45,8 +46,6 @@ failure here is contained to this mod instead of silently affecting every player
   wrong codes — reset IV's keyboard controls to `W/A/S/D` or leave them untouched.
 * **Do not bind IV's built-in joystick.** If any IV control is assigned a joystick axis/button, IV sets
   `kbOverride` and ignores the keyboard entirely, which also disables this bridge.
-* Movement must be bound to stick axes (or the four stick direction buttons). A D-pad-only binding produces
-  no direction vector.
 * The mixin targets a version-stamped package (`mcinterface1201`). Another Minecraft version needs its own
   build.
 
