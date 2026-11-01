@@ -1,0 +1,42 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/ControlFlexMC/cfx-compat-vehicles/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
+authors = "${mod_authors}"
+description = '''${mod_description}'''
+
+[[mixins]]
+config = "cfx-compat-vehicles.mixins.json"
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+mandatory = true
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "${controlflex_mod_id}"
+mandatory = true
+versionRange = "${controlflex_version_range}"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "mts"
+mandatory = false
+versionRange = "${mts_version_range}"
+ordering = "AFTER"
+side = "CLIENT"

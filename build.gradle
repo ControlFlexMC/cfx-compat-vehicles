@@ -1,31 +1,23 @@
 plugins {
-    id 'net.neoforged.moddev.legacyforge'
+    id 'net.neoforged.moddev'
 }
 
 base {
     archivesName = 'cfx-compat-vehicles'
 }
 
-def isRelease = project.hasProperty('release')
-// build_id 由 CI 递增；本仓库目前直接发 0.8.9，没有该属性时按无 build 段处理。
-def buildId = project.findProperty('build_id')
-def modArtifactVersion = (isRelease || !buildId) ? mod_version : "${mod_version}.${buildId}"
-version = "${modArtifactVersion}-mc${minecraft_version}-forge"
+version = "${mod_version}-mc${minecraft_version}-neoforge"
 group = maven_group
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 }
 
-mixin {
-    config 'cfx-compat-vehicles.mixins.json'
-    // 不接 Mixin 注解处理器：本模组唯一的注入目标是第三方模组类（字符串 targets，编译期不可见），
-    // 处理器会以 "target could not be found" 拒绝编译；而该注入 remap = false，本来也不需要 refmap。
-    // 代价：以后若要注入 MC 类，必须把处理器加回来，否则生产环境缺少映射。
-}
-
-legacyForge {
-    version = "${minecraft_version}-${forge_version}"
+// net.neoforged.moddev has no mixin {} DSL, and this mod needs no refmap: its only mixin
+// targets a third-party class with remap = false. So the config is declared in
+// neoforge.mods.toml ([[mixins]]) and no annotation processor is wired up.
+neoForge {
+    version = neoforge_version
 
     runs {
         client {
@@ -41,16 +33,19 @@ legacyForge {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    compileOnly 'com.github.ControlFlexMC:control-flex-api:0.8.9'
+    // ControlFlex API (plain Java, loader-agnostic), resolved from JitPack.
+    compileOnly "com.github.ControlFlexMC:control-flex-api:${controlflex_api_version}"
     compileOnly 'org.jetbrains:annotations:24.0.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testImplementation 'org.slf4j:slf4j-api:2.0.9'
+    // compileOnly does not reach the test classpath; tests load the API-backed classes.
+    testImplementation "com.github.ControlFlexMC:control-flex-api:${controlflex_api_version}"
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -71,14 +66,16 @@ processResources {
         'mod_description'        : mod_description,
         'minecraft_version'      : minecraft_version,
         'minecraft_version_range': minecraft_version_range,
-        'forge_version'          : forge_version,
-        'forge_version_range'    : forge_version_range,
+        'neoforge_version'       : neoforge_version,
+        'neoforge_version_range' : neoforge_version_range,
         'loader_version_range'   : loader_version_range,
         'java_version'           : java_version,
         'controlflex_mod_id'     : controlflex_mod_id,
+        'controlflex_version_range': controlflex_version_range,
+        'mts_version_range'      : mts_version_range,
     ]
 
-    filesMatching(['pack.mcmeta', 'META-INF/mods.toml', '*.mixins.json']) {
+    filesMatching(['pack.mcmeta', 'META-INF/neoforge.mods.toml', '*.mixins.json']) {
         expand expandProps
     }
 
@@ -86,12 +83,5 @@ processResources {
 }
 
 jar {
-    manifest {
-        attributes([
-            'MixinConfigs': 'cfx-compat-vehicles.mixins.json'
-        ])
-    }
-
     from(file('LICENSE')) { rename { "${it}_${mod_id}" } }
-    finalizedBy 'reobfJar'
 }

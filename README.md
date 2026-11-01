@@ -3,7 +3,14 @@
 Vehicle controller bridge for [ControlFlex](https://www.curseforge.com/minecraft/mc-mods/control-flex) — lets the controller
 drive vehicles from mods that **poll raw GLFW key state** instead of reading Minecraft's input.
 
-Currently supports **Immersive Vehicles (MTS)**.
+Currently supports **Immersive Vehicles (MTS)** on **Minecraft 1.21.1 / NeoForge**.
+
+| Branch | Minecraft | Loader |
+|---|---|---|
+| `1.20.1` | 1.20.1 | Forge |
+| `1.21.1` | 1.21.1 | NeoForge |
+
+Immersive Vehicles ships no Fabric build, so every branch is single-loader.
 
 [中文文档](README_ZH.md)
 
@@ -36,8 +43,8 @@ failure here is contained to this mod instead of silently affecting every player
 
 | | |
 |---|---|
-| Minecraft | 1.20.1 |
-| Loader | Forge 47+ |
+| Minecraft | 1.21.1 |
+| Loader | NeoForge 21.1+ |
 | ControlFlex | 0.8.9+ |
 | Immersive Vehicles | 24.x — **optional**, the mod is inert without it |
 
@@ -48,8 +55,8 @@ failure here is contained to this mod instead of silently affecting every player
   wrong codes — reset IV's keyboard controls to `W/A/S/D` or leave them untouched.
 * **Do not bind IV's built-in joystick.** If any IV control is assigned a joystick axis/button, IV sets
   `kbOverride` and ignores the keyboard entirely, which also disables this bridge.
-* The mixin targets a version-stamped package (`mcinterface1201`). Another Minecraft version needs its own
-  build.
+* The mixin targets a version-stamped package (`mcinterface1211` on this branch). Another Minecraft
+  version needs its own branch.
 
 ## Building
 

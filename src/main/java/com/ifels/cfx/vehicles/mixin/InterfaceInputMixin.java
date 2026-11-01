@@ -15,18 +15,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Immersive Vehicles 的按键入口。
+ * Immersive Vehicles 的按键入口（Minecraft 1.21.1 / NeoForge）。
  *
  * <h2>为什么注入这里</h2>
  * IV 的 {@code ControlSystem$ControlsKeyboard} 走
  * {@code InterfaceInput.isKeyPressed(code)} → {@code GLFW.glfwGetKey}，问的是操作系统，
  * 既不读 {@code KeyMapping} 也不读 {@code InputConstants}——ControlFlex 现有的
- * keyMapping / virtualKbm / glfwPoll 三条通道都到不了它。GLFW 层本身在 Forge 上不可注入
+ * keyMapping / virtualKbm / glfwPoll 三条通道都到不了它。GLFW 层本身在 NeoForge 上同样不可注入
  * （库类由系统类加载器加载，不经过 ModLauncher 的变换器），所以只能在这里补一句。
  *
  * <h2>为什么不需要"玩家是否在车上"的判断</h2>
- * {@code isKeyPressed} 只被 IV 的载具控制系统调用，"这个方法被调用"本身已经说明玩家在驾驶，
- * 因此不需要反射进 IV 内部或另行跟踪驾驶状态。
+ * {@code isKeyPressed} 只被 IV 的载具控制系统调用，"这个方法被调用"本身已经说明玩家在驾驶。
  *
  * <h2>边界</h2>
  * <ul>
@@ -35,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  *   <li>只读：不写任何全局键状态，也不碰 {@code KeyMapping}。</li>
  * </ul>
  */
-@Mixin(targets = "mcinterface1201.InterfaceInput", remap = false)
+@Mixin(targets = "mcinterface1211.InterfaceInput", remap = false)
 public class InterfaceInputMixin {
 
     @Unique

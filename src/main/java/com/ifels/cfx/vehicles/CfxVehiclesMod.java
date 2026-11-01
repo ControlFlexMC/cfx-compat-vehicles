@@ -1,14 +1,14 @@
 package com.ifels.cfx.vehicles;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 载具兼容桥入口。
+ * 载具兼容桥入口（Minecraft 1.21.1 / NeoForge）。
  *
  * <p>逻辑全在 {@code InterfaceInputMixin} 里按需计算，没有 tick 也没有常驻状态：
  * 只有载具模组真的去问"这个键按下了吗"的时候才算一次。</p>
