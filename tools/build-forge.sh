@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Build the Forge (MC 1.20.1) artifact for cfx-compat-epicfight.
+# Build the Forge (MC 1.18.2) artifact for cfx-compat-vehicles.
+# Mirrors cfx-compat-create/tools/build-forge.sh, adjusted for this repository's
+# single-project build (no :forge: / :fabric: subprojects) and its own jar name.
 #
 # Usage:
 #   ./tools/build-forge.sh
@@ -7,8 +9,11 @@
 #   ./tools/build-forge.sh --clean
 #
 # Environment:
-#   MC_1_20_1_FORGE_PATH  instance dir; unset → skip instance deploy (WARNING)
-#   RELEASE_DEPLOY_PATH   extra copy dest on --release; unset → WARNING
+#   MC_1_18_2_FORGE_PATH  instance dir; unset -> skip instance deploy (WARNING)
+#   RELEASE_DEPLOY_PATH   extra copy dest on --release; unset -> WARNING
+#
+# --release passes -Prelease, which drops the optional build_id segment from the jar
+# name. That segment only appears when a build_id is supplied (-Pbuild_id=<id>).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -16,35 +21,37 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 cd "$PROJECT_DIR"
 
-# ── Defaults ──────────────────────────────────────────────────────────────────
 RELEASE=false
 CLEAN=false
 EXTRA_ARGS=()
 
-# ── Parse args ────────────────────────────────────────────────────────────────
 for arg in "$@"; do
     case "$arg" in
-        --release)
-            RELEASE=true
-            ;;
-        --clean)
-            CLEAN=true
-            ;;
-        *)
-            EXTRA_ARGS+=("$arg")
-            ;;
+        --release) RELEASE=true ;;
+        --clean)   CLEAN=true ;;
+        *)         EXTRA_ARGS+=("$arg") ;;
     esac
 done
 
-# ── Determine task and version label ──────────────────────────────────────────
 mod_version=$(grep -E '^mod_version=' gradle.properties | cut -d= -f2)
 mc_ver=$(grep -E '^minecraft_version=' gradle.properties | cut -d= -f2)
 
 if $RELEASE; then
+    gradle_args=(-Prelease)
     label="${mod_version}"
 else
-    build_id=$(grep -E '^build_id=' gradle.properties | cut -d= -f2)
-    label="${mod_version}.${build_id}"
+    gradle_args=()
+    # Keep the expected jar in step with an explicit -Pbuild_id on the command line.
+    build_id=$(grep -E '^build_id=' gradle.properties | cut -d= -f2 || true)
+    if [[ ${#EXTRA_ARGS[@]} -gt 0 ]]; then
+        for arg in "${EXTRA_ARGS[@]}"; do
+            case "$arg" in
+                -Pbuild_id=*) build_id="${arg#-Pbuild_id=}" ;;
+            esac
+        done
+    fi
+    label="${mod_version}"
+    if [[ -n "${build_id}" ]]; then label="${mod_version}.${build_id}"; fi
 fi
 
 if $RELEASE; then build_type="Release"; else build_type="Debug"; fi
@@ -56,54 +63,42 @@ if $CLEAN; then
 fi
 
 gradle_cmd=(./gradlew build)
-if $RELEASE; then
-    gradle_cmd+=(-Prelease)
-fi
-if [[ ${#EXTRA_ARGS[@]} -gt 0 ]]; then
-    gradle_cmd+=("${EXTRA_ARGS[@]}")
-fi
+if [[ ${#gradle_args[@]} -gt 0 ]]; then gradle_cmd+=("${gradle_args[@]}"); fi
+if [[ ${#EXTRA_ARGS[@]} -gt 0 ]]; then gradle_cmd+=("${EXTRA_ARGS[@]}"); fi
 echo "==> Running: ${gradle_cmd[*]}"
 "${gradle_cmd[@]}"
 
-# ── Artifact ──────────────────────────────────────────────────────────────────
-NEW_JAR="${PROJECT_DIR}/build/libs/cfx-compat-epicfight-${label}-mc${mc_ver}-forge.jar"
+NEW_JAR="${PROJECT_DIR}/build/libs/cfx-compat-vehicles-${label}-mc${mc_ver}-forge.jar"
 if [[ ! -f "${NEW_JAR}" ]]; then
-    echo "❌ JAR not found: ${NEW_JAR}"
+    echo "JAR not found: ${NEW_JAR}"
     exit 1
 fi
 
 echo ""
-echo "✓ Build complete: $(basename "${NEW_JAR}")"
+echo "Build complete: $(basename "${NEW_JAR}")"
 
-# ── Instance deploy ───────────────────────────────────────────────────────────
-MC_INSTANCE="${MC_1_20_1_FORGE_PATH:-}"
+MC_INSTANCE="${MC_1_18_2_FORGE_PATH:-}"
 MODS_DIR="${MC_INSTANCE}/mods"
 
 if [[ -z "${MC_INSTANCE}" ]]; then
-    echo "⚠️  MC_1_20_1_FORGE_PATH is not set; skipping instance deploy"
+    echo "MC_1_18_2_FORGE_PATH is not set; skipping instance deploy"
     echo "   artifact: ${NEW_JAR}"
 else
     LOGS_DIR="${MC_INSTANCE}/logs"
     if [[ -d "${LOGS_DIR}" ]]; then
         rm -rf "${LOGS_DIR:?}"/*
         echo "  cleared logs: ${LOGS_DIR}"
-    else
-        echo "  logs dir missing, skip"
     fi
 
     CRASH_DIR="${MC_INSTANCE}/crash-reports"
     if [[ -d "${CRASH_DIR}" ]]; then
         rm -rf "${CRASH_DIR:?}"/*
         echo "  cleared crash-reports: ${CRASH_DIR}"
-    else
-        echo "  crash-reports dir missing, skip"
     fi
 
     if [[ -d "${MODS_DIR}" ]]; then
-        rm -f "${MODS_DIR}"/cfx-compat-epicfight-*-mc*-forge.jar
-        echo "  removed old cfx-compat-epicfight Forge jars"
-    else
-        echo "  mods dir missing, will create"
+        rm -f "${MODS_DIR}"/cfx-compat-vehicles-*-mc*-forge.jar
+        echo "  removed old cfx-compat-vehicles Forge jars"
     fi
 
     mkdir -p "${MODS_DIR}"
@@ -111,15 +106,12 @@ else
     echo "  deployed: ${MODS_DIR}/$(basename "${NEW_JAR}")"
 fi
 
-# ── Release copy ──────────────────────────────────────────────────────────────
 if $RELEASE; then
     if [[ -n "${RELEASE_DEPLOY_PATH:-}" ]]; then
         mkdir -p "${RELEASE_DEPLOY_PATH}"
         cp "${NEW_JAR}" "${RELEASE_DEPLOY_PATH}/"
         echo "  release copy: ${RELEASE_DEPLOY_PATH}/$(basename "${NEW_JAR}")"
     else
-        echo "⚠️  release build: RELEASE_DEPLOY_PATH is not set; skipping release copy"
+        echo "RELEASE_DEPLOY_PATH is not set; skipping release copy"
     fi
-elif [[ -n "${RELEASE_DEPLOY_PATH:-}" ]]; then
-    echo "  dev build: ignoring RELEASE_DEPLOY_PATH (only used with --release)"
 fi
