@@ -7,7 +7,7 @@ base {
 }
 
 def isRelease = project.hasProperty('release')
-// build_id 由 CI 递增；本仓库目前直接发 0.8.9，没有该属性时按无 build 段处理。
+// build_id 由 CI 递增；本仓库目前直接发 0.8.8，没有该属性时按无 build 段处理。
 def buildId = project.findProperty('build_id')
 def modArtifactVersion = (isRelease || !buildId) ? mod_version : "${mod_version}.${buildId}"
 version = "${modArtifactVersion}-mc${minecraft_version}-forge"
