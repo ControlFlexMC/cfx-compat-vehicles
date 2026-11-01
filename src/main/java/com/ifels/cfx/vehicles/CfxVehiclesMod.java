@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
         modid = CfxVehiclesMod.MOD_ID,
         name = "Control Flex x Vehicles",
         // 与 mcmod.info / gradle.properties 的 mod_version 保持一致（1.12.2 的注解只收字面量）
-        version = "0.8.9",
+        version = "0.8.8",
         clientSideOnly = true,
         acceptableRemoteVersions = "*",
         dependencies = "required-after:controlflex"
