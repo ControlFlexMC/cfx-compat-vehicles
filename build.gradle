@@ -47,7 +47,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.ControlFlexMC:control-flex-api:0.8.9'
+    compileOnly 'com.github.ControlFlexMC:control-flex-api:0.8.8'
     compileOnly 'org.jetbrains:annotations:24.0.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
