@@ -47,7 +47,7 @@ failure here is contained to this mod instead of silently affecting every player
 | Minecraft | 26.1.2 |
 | Loader | NeoForge 26.1.2+ |
 | ControlFlex | 0.8.8+ |
-| Immersive Vehicles | 25.x — **optional**, the mod is inert without it |
+| Immersive Vehicles | 25.0.0 (the 26.1 build) — **optional**, the mod is inert without it |
 
 ## Known limitations
 

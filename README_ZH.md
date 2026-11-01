@@ -41,7 +41,7 @@ Immersive Vehicles 的操控走 `GLFW.glfwGetKey(window, keyCode)` —— 它既
 | Minecraft | 26.1.2 |
 | 加载器 | NeoForge 26.1.2+ |
 | ControlFlex | 0.8.8+ |
-| Immersive Vehicles | 25.x —— **可选**，未安装时本模组不产生任何行为 |
+| Immersive Vehicles | 25.0.0（26.1 构建）—— **可选**，未安装时本模组不产生任何行为 |
 
 ## 已知局限
 
