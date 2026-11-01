@@ -1,16 +1,20 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
+        gradlePluginPortal() {
+            // UniMined pulls a log4j that clashes with the one MC ships.
+            content { excludeGroup('org.apache.logging.log4j') }
+        }
         maven { name = 'MinecraftForge'; url = 'https://maven.minecraftforge.net/' }
         maven { name = 'SpongePowered'; url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { name = 'WagYourTail'; url = 'https://maven.wagyourtail.xyz/releases' }
+        maven { name = 'WagYourTailSnapshots'; url = 'https://maven.wagyourtail.xyz/snapshots' }
     }
 
     plugins {
-        // ModDevGradle's NFRT refuses MC 1.17 and older ("NFRT currently does not support
-        // MCP versions that did not make use of official Mojang mappings"), so this branch
-        // uses ForgeGradle like the 1.16.5 era did.
-        id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-        id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+        // ModDevGradle's NFRT refuses MC pre-1.17, and ForgeGradle did not resolve official
+        // names for 1.16.5 here. UniMined handles the whole pre-1.17 range, same as the
+        // ControlFlex 1.12.2 line uses.
+        id 'xyz.wagyourtail.unimined' version '1.4.1'
     }
 }
 

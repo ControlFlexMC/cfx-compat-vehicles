@@ -3,7 +3,19 @@
 Vehicle controller bridge for [ControlFlex](https://www.curseforge.com/minecraft/mc-mods/control-flex) — lets the controller
 drive vehicles from mods that **poll raw GLFW key state** instead of reading Minecraft's input.
 
-Currently supports **Immersive Vehicles (MTS)**.
+Currently supports **Immersive Vehicles (MTS)** on **Minecraft 1.16.5 / Forge**.
+
+| Branch | Minecraft | Loader |
+|---|---|---|
+| `1.12.2` | 1.12.2 | Forge |
+| `1.16.5` | 1.16.5 | Forge |
+| `1.18.2` | 1.18.2 | Forge |
+| `1.19.2` | 1.19.2 | Forge |
+| `1.20.1` | 1.20.1 | Forge |
+| `1.21.1` | 1.21.1 | NeoForge |
+| `26.1` | 26.1.x | NeoForge |
+
+Immersive Vehicles ships no Fabric build, so every branch is single-loader.
 
 [中文文档](README_ZH.md)
 
@@ -36,8 +48,8 @@ failure here is contained to this mod instead of silently affecting every player
 
 | | |
 |---|---|
-| Minecraft | 1.20.1 |
-| Loader | Forge 47+ |
+| Minecraft | 1.16.5 |
+| Loader | Forge 36+ |
 | ControlFlex | 0.8.9+ |
 | Immersive Vehicles | 24.x — **optional**, the mod is inert without it |
 

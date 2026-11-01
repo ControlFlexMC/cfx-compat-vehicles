@@ -2,7 +2,19 @@
 
 ControlFlex ↔ 载具桥接模组 — 让手柄能驾驶那些**直接轮询 GLFW 按键状态**、而不读 Minecraft 输入的模组载具。
 
-目前支持 **Immersive Vehicles (MTS)**。
+目前支持 **Immersive Vehicles (MTS)**，对应 **Minecraft 1.16.5 / Forge**。
+
+| 分支 | Minecraft | 加载器 |
+|---|---|---|
+| `1.12.2` | 1.12.2 | Forge |
+| `1.16.5` | 1.16.5 | Forge |
+| `1.18.2` | 1.18.2 | Forge |
+| `1.19.2` | 1.19.2 | Forge |
+| `1.20.1` | 1.20.1 | Forge |
+| `1.21.1` | 1.21.1 | NeoForge |
+| `26.1` | 26.1.x | NeoForge |
+
+Immersive Vehicles 没有 Fabric 构建，因此每个分支都是单加载器。
 
 [English](README.md)
 
@@ -30,8 +42,8 @@ Immersive Vehicles 的操控走 `GLFW.glfwGetKey(window, keyCode)` —— 它既
 
 | | |
 |---|---|
-| Minecraft | 1.20.1 |
-| 加载器 | Forge 47+ |
+| Minecraft | 1.16.5 |
+| 加载器 | Forge 36+ |
 | ControlFlex | 0.8.9+ |
 | Immersive Vehicles | 24.x —— **可选**，未安装时本模组不产生任何行为 |
 

@@ -1,5 +1,6 @@
 plugins {
-    id 'net.minecraftforge.gradle'
+    id 'java'
+    id 'xyz.wagyourtail.unimined'
 }
 
 base {
@@ -9,35 +10,41 @@ base {
 version = "${mod_version}-mc${minecraft_version}-forge"
 group = maven_group
 
+// MC 1.16.5 runs on Java 8; the sources stay Java 8 compatible on this branch.
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 }
 
-minecraft {
-    // Official (Mojang) names in dev; reobfJar rewrites members to SRG for production.
-    mappings channel: 'official', version: '1.16.5'
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
-
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    mavenLocal()
+    maven { url = 'https://maven.minecraftforge.net/' }
+    maven { url = 'https://libraries.minecraft.net/' }
+    maven { url = 'https://jitpack.io' }
+}
+
+unimined.minecraft {
+    version minecraft_version
+
+    mappings {
+        // Official (Mojang) names, matching every other branch's source.
+        mojmap()
+    }
+
+    minecraftForge {
+        loader forge_version
+        mixinConfig('cfx-compat-vehicles.mixins.json')
+    }
+
+    // MCP/official -> SRG for production, which is what the Forge client expects.
+    defaultRemapJar = true
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    // ControlFlex API (plain Java, loader-agnostic), resolved from JitPack.
+    // ControlFlex API (plain Java, loader-agnostic). This branch needs the Java 8 build
+    // (ControlFlexMC/control-flex-api jdk/1.8 line), not the Java 17 default.
     compileOnly "com.github.ControlFlexMC:control-flex-api:${controlflex_api_version}"
     compileOnly 'org.jetbrains:annotations:24.0.1'
 
@@ -79,12 +86,9 @@ processResources {
 }
 
 jar {
-    // No refmap: the only mixin targets third-party code with remap = false, and the
-    // annotation processor cannot validate a target class that is not on the classpath.
     manifest {
         attributes(['MixinConfigs': 'cfx-compat-vehicles.mixins.json'])
     }
 
     from(file('LICENSE')) { rename { "${it}_${mod_id}" } }
-    finalizedBy 'reobfJar'
 }
