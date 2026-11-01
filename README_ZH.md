@@ -18,7 +18,7 @@ Immersive Vehicles 的操控走 `GLFW.glfwGetKey(window, keyCode)` —— 它既
 
 ## 工作原理
 
-* `InterfaceInputMixin` 注入 `mcinterface1201.InterfaceInput#isKeyPressed`，当 ControlFlex 认为玩家在转向时，
+* `InterfaceInputMixin` 注入 `mcinterface1165.InterfaceInput#isKeyPressed`，当 ControlFlex 认为玩家在转向时，
   对四个移动键返回 `true`。
 * 信号源是玩家自己的 tick 级 `input.forwardImpulse` / `leftImpulse` —— 与原生移动用的是同一个值，
   且已经过 ControlFlex 的模拟策略与响应曲线。所以"玩家在动"和"载具看到按键"不可能互相矛盾。
@@ -42,7 +42,7 @@ Immersive Vehicles 的操控走 `GLFW.glfwGetKey(window, keyCode)` —— 它既
   请把 IV 的键盘控制恢复成 `W/A/S/D`，或保持默认不动。
 * **不要给 IV 绑定它自带的摇杆。** 只要有任何 IV 控件被指派到手柄轴/按键，IV 就会置 `kbOverride`
   并完全忽略键盘，本桥随之失效。
-* mixin 目标是带版本戳的包名（`mcinterface1201`）。换 Minecraft 版本需要单独构建。
+* mixin 目标是带版本戳的包名（`mcinterface1165`）。换 Minecraft 版本需要单独构建。
 
 ## 构建
 

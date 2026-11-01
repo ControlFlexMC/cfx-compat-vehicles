@@ -35,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  *   <li>只读：不写任何全局键状态，也不碰 {@code KeyMapping}。</li>
  * </ul>
  */
-@Mixin(targets = "mcinterface1201.InterfaceInput", remap = false)
+@Mixin(targets = "mcinterface1165.InterfaceInput", remap = false)
 public class InterfaceInputMixin {
 
     @Unique

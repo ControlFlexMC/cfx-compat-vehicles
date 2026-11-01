@@ -43,11 +43,18 @@ public enum VehicleControl {
      * @param leftImpulse    正 = 往左（与 vanilla {@code Input} 同向）
      */
     public boolean isHeld(float forwardImpulse, float leftImpulse) {
-        return switch (this) {
-            case FORWARD -> forwardImpulse >= MOVE_THRESHOLD;
-            case BACKWARD -> forwardImpulse <= -MOVE_THRESHOLD;
-            case LEFT -> leftImpulse >= MOVE_THRESHOLD;
-            case RIGHT -> leftImpulse <= -MOVE_THRESHOLD;
-        };
+        // 本分支编译到 Java 8（MC 1.16.5），不能用 switch 表达式。
+        switch (this) {
+            case FORWARD:
+                return forwardImpulse >= MOVE_THRESHOLD;
+            case BACKWARD:
+                return forwardImpulse <= -MOVE_THRESHOLD;
+            case LEFT:
+                return leftImpulse >= MOVE_THRESHOLD;
+            case RIGHT:
+                return leftImpulse <= -MOVE_THRESHOLD;
+            default:
+                return false;
+        }
     }
 }

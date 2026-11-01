@@ -3,11 +3,14 @@ pluginManagement {
         gradlePluginPortal()
         maven { name = 'MinecraftForge'; url = 'https://maven.minecraftforge.net/' }
         maven { name = 'SpongePowered'; url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        maven { name = 'NeoForge'; url = 'https://maven.neoforged.net/releases' }
     }
 
     plugins {
-        id 'net.neoforged.moddev.legacyforge' version '2.0.141'
+        // ModDevGradle's NFRT refuses MC 1.17 and older ("NFRT currently does not support
+        // MCP versions that did not make use of official Mojang mappings"), so this branch
+        // uses ForgeGradle like the 1.16.5 era did.
+        id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+        id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
     }
 }
 
