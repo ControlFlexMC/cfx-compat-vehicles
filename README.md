@@ -32,7 +32,7 @@ failure here is contained to this mod instead of silently affecting every player
 
 ## How it works
 
-* `InterfaceInputMixin` hooks `mcinterface1201.InterfaceInput#isKeyPressed` and answers `true` for the
+* `InterfaceInputMixin` hooks `mcinterface1192.InterfaceInput#isKeyPressed` and answers `true` for the
   four movement keys when ControlFlex says the player is steering.
 * The signal is the player's own tick-level `input.forwardImpulse` / `leftImpulse` — the same value
   vanilla movement uses, after ControlFlex's analog policy and response curve. "The player is moving" and

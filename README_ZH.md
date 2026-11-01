@@ -30,7 +30,7 @@ Immersive Vehicles 的操控走 `GLFW.glfwGetKey(window, keyCode)` —— 它既
 
 ## 工作原理
 
-* `InterfaceInputMixin` 注入 `mcinterface1201.InterfaceInput#isKeyPressed`，当 ControlFlex 认为玩家在转向时，
+* `InterfaceInputMixin` 注入 `mcinterface1192.InterfaceInput#isKeyPressed`，当 ControlFlex 认为玩家在转向时，
   对四个移动键返回 `true`。
 * 信号源是玩家自己的 tick 级 `input.forwardImpulse` / `leftImpulse` —— 与原生移动用的是同一个值，
   且已经过 ControlFlex 的模拟策略与响应曲线。所以"玩家在动"和"载具看到按键"不可能互相矛盾。
