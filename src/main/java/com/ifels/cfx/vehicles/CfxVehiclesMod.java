@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 载具兼容桥入口（Minecraft 1.21.1 / NeoForge）。
+ * 载具兼容桥入口（Minecraft 26.1.2 / NeoForge）。
  *
  * <p>逻辑全在 {@code InterfaceInputMixin} 里按需计算，没有 tick 也没有常驻状态：
  * 只有载具模组真的去问"这个键按下了吗"的时候才算一次。</p>
@@ -25,7 +25,7 @@ public class CfxVehiclesMod {
     private static final String[] SUPPORTED_MODS = {"mts"};
 
     public CfxVehiclesMod() {
-        if (FMLEnvironment.dist != Dist.CLIENT) {
+        if (FMLEnvironment.getDist() != Dist.CLIENT) {
             return;
         }
         boolean anyPresent = false;

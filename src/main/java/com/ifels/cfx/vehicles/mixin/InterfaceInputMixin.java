@@ -8,6 +8,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.phys.Vec2;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Immersive Vehicles 的按键入口（Minecraft 1.21.1 / NeoForge）。
+ * Immersive Vehicles 的按键入口（Minecraft 26.1.2 / NeoForge）。
  *
  * <h2>为什么注入这里</h2>
  * IV 的 {@code ControlSystem$ControlsKeyboard} 走
@@ -34,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  *   <li>只读：不写任何全局键状态，也不碰 {@code KeyMapping}。</li>
  * </ul>
  */
-@Mixin(targets = "mcinterface1211.InterfaceInput", remap = false)
+@Mixin(targets = "mcinterface261.InterfaceInput", remap = false)
 public class InterfaceInputMixin {
 
     @Unique
@@ -59,7 +60,8 @@ public class InterfaceInputMixin {
             return;
         }
 
-        boolean held = control.isHeld(player.input.forwardImpulse, player.input.leftImpulse);
+        Vec2 move = player.input.getMoveVector();
+        boolean held = control.isHeld(move.y, move.x);
         if (!held) {
             held = cfx$actionHeld(control.actionId());
         }

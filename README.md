@@ -3,12 +3,13 @@
 Vehicle controller bridge for [ControlFlex](https://www.curseforge.com/minecraft/mc-mods/control-flex) — lets the controller
 drive vehicles from mods that **poll raw GLFW key state** instead of reading Minecraft's input.
 
-Currently supports **Immersive Vehicles (MTS)** on **Minecraft 1.21.1 / NeoForge**.
+Currently supports **Immersive Vehicles (MTS)** on **Minecraft 26.1.2 / NeoForge**.
 
 | Branch | Minecraft | Loader |
 |---|---|---|
 | `1.20.1` | 1.20.1 | Forge |
 | `1.21.1` | 1.21.1 | NeoForge |
+| `26.1.2` | 26.1.2 | NeoForge |
 
 Immersive Vehicles ships no Fabric build, so every branch is single-loader.
 
@@ -18,7 +19,7 @@ Immersive Vehicles ships no Fabric build, so every branch is single-loader.
 
 Immersive Vehicles reads its controls through `GLFW.glfwGetKey(window, keyCode)` — it never looks at
 `KeyMapping` or `InputConstants`, so ControlFlex's `keyMapping` / `virtualKbm` / `glfwPoll` channels
-cannot reach it. The GLFW layer itself is not injectable on Forge (library classes are loaded by the
+cannot reach it. The GLFW layer itself is not injectable on NeoForge (library classes are loaded by the
 system class loader and never pass through ModLauncher's transformer), so the bridge has to sit inside
 the vehicle mod's own read path.
 
@@ -27,12 +28,12 @@ failure here is contained to this mod instead of silently affecting every player
 
 ## How it works
 
-* `InterfaceInputMixin` hooks `mcinterface1201.InterfaceInput#isKeyPressed` and answers `true` for the
+* `InterfaceInputMixin` hooks `mcinterface261.InterfaceInput#isKeyPressed` and answers `true` for the
   four movement keys when ControlFlex says the player is steering.
-* The signal is the player's own tick-level `input.forwardImpulse` / `leftImpulse` — the same value
-  vanilla movement uses, after ControlFlex's analog policy and response curve. "The player is moving" and
+* The signal is the player's own tick-level `ClientInput#getMoveVector()` — the same value vanilla
+  movement uses, after ControlFlex's analog policy and response curve. "The player is moving" and
   "the vehicle sees a key" can therefore never disagree.
-* When the impulses are zero, the bridge falls back to ControlFlex's action state (`move_forward` …), so it
+* When the move vector is zero, the bridge falls back to ControlFlex's action state (`move_forward` …), so it
   keeps working with analog movement turned off — where the stick drives those digital actions instead.
 * Nothing is polled on a timer and no global key state is written: the answer is computed only when the
   vehicle actually asks, and a physically pressed key always wins.
@@ -43,10 +44,10 @@ failure here is contained to this mod instead of silently affecting every player
 
 | | |
 |---|---|
-| Minecraft | 1.21.1 |
-| Loader | NeoForge 21.1+ |
+| Minecraft | 26.1.2 |
+| Loader | NeoForge 26.1.2+ |
 | ControlFlex | 0.8.8+ |
-| Immersive Vehicles | 24.x — **optional**, the mod is inert without it |
+| Immersive Vehicles | 25.x — **optional**, the mod is inert without it |
 
 ## Known limitations
 
@@ -55,7 +56,7 @@ failure here is contained to this mod instead of silently affecting every player
   wrong codes — reset IV's keyboard controls to `W/A/S/D` or leave them untouched.
 * **Do not bind IV's built-in joystick.** If any IV control is assigned a joystick axis/button, IV sets
   `kbOverride` and ignores the keyboard entirely, which also disables this bridge.
-* The mixin targets a version-stamped package (`mcinterface1211` on this branch). Another Minecraft
+* The mixin targets a version-stamped package (`mcinterface261` on this branch). Another Minecraft
   version needs its own branch.
 
 ## Building

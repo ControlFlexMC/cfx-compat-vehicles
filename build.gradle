@@ -34,7 +34,7 @@ neoForge {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    maven { url = uri('https://jitpack.io') }
 }
 
 dependencies {
@@ -43,6 +43,7 @@ dependencies {
     compileOnly 'org.jetbrains:annotations:24.0.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
     testImplementation 'org.slf4j:slf4j-api:2.0.9'
     // compileOnly does not reach the test classpath; tests load the API-backed classes.
     testImplementation "com.github.ControlFlexMC:control-flex-api:${controlflex_api_version}"

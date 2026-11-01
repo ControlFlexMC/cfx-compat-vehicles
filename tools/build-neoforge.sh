@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the NeoForge (MC 1.21.1) artifact for cfx-compat-vehicles.
+# Build the NeoForge (MC 26.1.2) artifact for cfx-compat-vehicles.
 # Mirrors cfx-compat-create/tools/build-neoforge.sh, adjusted for this repository's
 # single-project build (no :neoforge: subproject) and its own jar name.
 #
@@ -9,7 +9,7 @@
 #   ./tools/build-neoforge.sh --clean
 #
 # Environment:
-#   MC_1_21_1_NEOFORGE_PATH  instance dir; unset -> skip instance deploy (WARNING)
+#   MC_26_1_2_NEOFORGE_PATH  instance dir; unset -> skip instance deploy (WARNING)
 #   RELEASE_DEPLOY_PATH   extra copy dest on --release; unset -> WARNING
 #
 # This branch's build.gradle has no release switch, so debug and release builds share
@@ -59,11 +59,11 @@ fi
 echo ""
 echo "Build complete: $(basename "${NEW_JAR}")"
 
-MC_INSTANCE="${MC_1_21_1_NEOFORGE_PATH:-}"
+MC_INSTANCE="${MC_26_1_2_NEOFORGE_PATH:-}"
 MODS_DIR="${MC_INSTANCE}/mods"
 
 if [[ -z "${MC_INSTANCE}" ]]; then
-    echo "MC_1_21_1_NEOFORGE_PATH is not set; skipping instance deploy"
+    echo "MC_26_1_2_NEOFORGE_PATH is not set; skipping instance deploy"
     echo "   artifact: ${NEW_JAR}"
 else
     LOGS_DIR="${MC_INSTANCE}/logs"
