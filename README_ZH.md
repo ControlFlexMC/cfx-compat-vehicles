@@ -55,5 +55,5 @@ Immersive Vehicles 的操控走 `GLFW.glfwGetKey(window, keyCode)` —— 它既
 
 ```bash
 ./gradlew build          # 产物在 build/libs/
-tools/build-forge.sh     # 构建并部署到配置好的实例
+tools/build-neoforge.sh  # 构建并部署到配置好的实例
 ```

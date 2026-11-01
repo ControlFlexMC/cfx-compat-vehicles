@@ -62,5 +62,5 @@ failure here is contained to this mod instead of silently affecting every player
 
 ```bash
 ./gradlew build          # jar in build/libs/
-tools/build-forge.sh     # build + deploy to the configured instance
+tools/build-neoforge.sh  # build + deploy to the configured instance
 ```
