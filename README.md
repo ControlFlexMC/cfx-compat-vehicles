@@ -3,7 +3,19 @@
 Vehicle controller bridge for [ControlFlex](https://www.curseforge.com/minecraft/mc-mods/control-flex) — lets the controller
 drive vehicles from mods that **poll raw GLFW key state** instead of reading Minecraft's input.
 
-Currently supports **Immersive Vehicles (MTS)** on **Minecraft 1.16.5 / Forge**.
+Currently supports **Immersive Vehicles (MTS)** on **Minecraft 1.12.2 / Forge**.
+
+| Branch | Minecraft | Loader |
+|---|---|---|
+| `1.12.2` | 1.12.2 | Forge |
+| `1.16.5` | 1.16.5 | Forge |
+| `1.18.2` | 1.18.2 | Forge |
+| `1.19.2` | 1.19.2 | Forge |
+| `1.20.1` | 1.20.1 | Forge |
+| `1.21.1` | 1.21.1 | NeoForge |
+| `26.1` | 26.1.x | NeoForge |
+
+Immersive Vehicles ships no Fabric build, so every branch is single-loader.
 
 | Branch | Minecraft | Loader |
 |---|---|---|
@@ -34,7 +46,7 @@ failure here is contained to this mod instead of silently affecting every player
 
 * `InterfaceInputMixin` hooks `mcinterface1165.InterfaceInput#isKeyPressed` and answers `true` for the
   four movement keys when ControlFlex says the player is steering.
-* The signal is the player's own tick-level `input.forwardImpulse` / `leftImpulse` — the same value
+* The signal is the player's own tick-level `moveForward` / `moveStrafing` — the same value
   vanilla movement uses, after ControlFlex's analog policy and response curve. "The player is moving" and
   "the vehicle sees a key" can therefore never disagree.
 * When the impulses are zero, the bridge falls back to ControlFlex's action state (`move_forward` …), so it
@@ -48,8 +60,8 @@ failure here is contained to this mod instead of silently affecting every player
 
 | | |
 |---|---|
-| Minecraft | 1.16.5 |
-| Loader | Forge 36+ |
+| Minecraft | 1.12.2 |
+| Loader | Forge 14+ |
 | ControlFlex | 0.8.9+ |
 | Immersive Vehicles | 24.x — **optional**, the mod is inert without it |
 
@@ -60,7 +72,7 @@ failure here is contained to this mod instead of silently affecting every player
   wrong codes — reset IV's keyboard controls to `W/A/S/D` or leave them untouched.
 * **Do not bind IV's built-in joystick.** If any IV control is assigned a joystick axis/button, IV sets
   `kbOverride` and ignores the keyboard entirely, which also disables this bridge.
-* The mixin targets a version-stamped package (`mcinterface1165`). Another Minecraft version needs its own
+* The mixin targets a version-stamped package (`mcinterface1122`). Another Minecraft version needs its own
   build.
 
 ## Building
