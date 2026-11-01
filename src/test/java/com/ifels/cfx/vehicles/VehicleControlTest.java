@@ -16,7 +16,7 @@ class VehicleControlTest {
     }
 
     @Test
-    void leftImpulseIsPositiveToTheLeft() {
+    void leftIsPositiveToTheLeft() {
         assertTrue(VehicleControl.LEFT.isHeld(0f, 1f));
         assertTrue(VehicleControl.RIGHT.isHeld(0f, -1f));
         assertFalse(VehicleControl.LEFT.isHeld(0f, -1f));
